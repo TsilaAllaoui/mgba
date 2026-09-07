@@ -1,0 +1,4 @@
+mGBA + GBAVirtualCart fork v1.0.0
+GBAVirtualCart submodule ref: v1.0.0
+GBAVirtualCart API: 3
+Release type: lightweight source overlay for a fresh mGBA fork

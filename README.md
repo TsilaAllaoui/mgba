@@ -1,270 +1,222 @@
-mGBA
-====
-
-mGBA is an emulator for running Game Boy Advance games. It aims to be faster and more accurate than many existing Game Boy Advance emulators, as well as adding features that other emulators lack. It also supports Game Boy and Game Boy Color games.
-
-Up-to-date news and downloads can be found at [mgba.io](https://mgba.io/).
-
-[![Build status](https://buildbot.mgba.io/badges/build-win32.svg)](https://buildbot.mgba.io)
-[![Translation status](https://hosted.weblate.org/widgets/mgba/-/svg-badge.svg)](https://hosted.weblate.org/engage/mgba)
-
-Features
---------
-
-- Highly accurate Game Boy Advance hardware support[<sup>[1]</sup>](#missing).
-- Game Boy/Game Boy Color hardware support.
-- Fast emulation. Known to run at full speed even on low end hardware, such as netbooks.
-- Qt and SDL ports for a heavy-weight and a light-weight frontend.
-- Local (same computer) link cable support.
-- Save type detection, even for flash memory size[<sup>[2]</sup>](#flashdetect).
-- Support for cartridges with motion sensors and rumble (only usable with game controllers).
-- Real-time clock support, even without configuration.
-- Solar sensor support for Boktai games.
-- Game Boy Camera and Game Boy Printer support.
-- A built-in BIOS implementation, and ability to load external BIOS files.
-- Scripting support using Lua.
-- Turbo/fast-forward support by holding Tab.
-- Rewind by holding Backquote.
-- Frameskip, configurable up to 10.
-- Screenshot support.
-- Cheat code support.
-- 9 savestate slots. Savestates are also viewable as screenshots.
-- Video, GIF, WebP, and APNG recording.
-- e-Reader support.
-- Remappable controls for both keyboards and gamepads.
-- Loading from ZIP and 7z files.
-- IPS, UPS and BPS patch support.
-- Game debugging via a command-line interface and GDB remote support, compatible with Ghidra and IDA Pro.
-- Configurable emulation rewinding.
-- Support for loading and exporting GameShark and Action Replay snapshots.
-- Cores available for RetroArch/Libretro and OpenEmu.
-- Community-provided translations for several languages via [Weblate](https://hosted.weblate.org/engage/mgba).
-- Many, many smaller things.
-
-#### Game Boy mappers
-
-The following mappers are fully supported:
-
-- MBC1
-- MBC1M
-- MBC2
-- MBC3
-- MBC3+RTC
-- MBC30
-- MBC5
-- MBC5+Rumble
-- MBC7
-- M161
-- Wisdom Tree (unlicensed)
-- NT "old type" 1 and 2 (unlicensed multicart)
-- NT "new type" (unlicensed MBC5-like)
-- Pokémon Jade/Diamond (unlicensed)
-- Sachen MMC1 (unlicensed)
-
-The following mappers are partially supported:
-
-- MBC6 (missing flash memory write support)
-- MMM01
-- Pocket Cam
-- TAMA5 (incomplete RTC support)
-- HuC-1 (missing IR support)
-- HuC-3 (missing IR support)
-- Sachen MMC2 (missing alternate wiring support)
-- BBD (missing logo switching)
-- Hitek (missing logo switching)
-- GGB-81 (missing logo switching)
-- Li Cheng (missing logo switching)
-- Sintax (missing logo switching)
-
-### Planned features
-
-- Networked multiplayer link cable support.
-- Dolphin/JOY bus link cable support.
-- MP2k audio mixing, for higher quality sound than hardware.
-- Re-recording support for tool-assist runs.
-- A comprehensive debug suite.
-- Wireless adapter support.
-
-Supported Platforms
--------------------
-
-- Windows 7 or newer
-- OS X 10.9 (Mavericks)[<sup>[3]</sup>](#osxver) or newer
-- Linux
-- FreeBSD
-- Nintendo 3DS
-- Nintendo Switch
-- Wii
-- PlayStation Vita
+# mGBA + GBAVirtualCart fork v1.0
 
-Other Unix-like platforms, such as OpenBSD, are known to work as well, but are untested and not fully supported.
+This repository overlay adds persistent virtual GBA flash-cartridge support to an mGBA fork by using **GBAVirtualCart as a Git submodule**. The same NOR/FRAM backing files can be opened by the matching melonDS fork, so a cart flashed in melonDS can be booted and tested in mGBA without converting or copying its contents.
 
-### System requirements
+The fork keeps the normal mGBA frontends. For interactive virtual-cart testing, **SDL is preferred** because it gives direct keyboard/gamepad input. Qt remains available for the normal GUI and checkpoint/movie recording workflow.
 
-Requirements are minimal. Any computer that can run Windows Vista or newer should be able to handle emulation. Support for OpenGL 1.1 or newer is also required, with OpenGL 3.2 or newer for shaders and advanced features.
+## What this adds
 
-Downloads
----------
+- Shared `GBAVirtualCart` cartridge core, used as `externals/GBAVirtualCart`.
+- Persistent virtual NOR and FRAM backing files.
+- Existing-cart mode: open a cart created/flashed by melonDS without resetting or overlaying it.
+- S29GL01GS / Mini128 128 MiB NOR + FRAM profile.
+- ST M36 16 MiB profile.
+- M6/M6M, M6MGD137, M28W640FS-T70ZA6 and MX26L6420MC-90 profiles.
+- S29 mapper/bank/FRAM behavior and NOR command emulation from the shared module.
+- mGBA bus adapter with strict writable ranges, event statistics and persistent state.
+- Compact savestate support for virtual-cart runtime state.
+- Deterministic input movie/checkpoint helpers.
+- AutoQA and a bus/protocol self-test.
+- A simple menu launcher: `./mgba.sh`.
+- SDL, Qt and headless frontends from one build.
 
-Downloads can be found on the official website, in the [Downloads][downloads] section. The source code can be found on [GitHub][source].
+## Important workflow rule
 
-Controls
---------
+**Do not run melonDS and mGBA at the same time against the same writable virtual-cart backing files.** Close one emulator completely before opening the cart in the other.
 
-Controls are configurable in the settings menu. Many game controllers should be automatically mapped by default. The default keyboard controls are as follows:
+## First-time setup
 
-- **A**: X
-- **B**: Z
-- **L**: A
-- **R**: S
-- **Start**: Enter
-- **Select**: Backspace
+First publish your `GBAVirtualCart` repository and create the `v1.0.0` tag. By default the setup script expects:
 
-Compiling
----------
+```text
+https://github.com/TsilaAllaoui/GBAVirtualCart.git
+```
 
-Compiling requires using CMake 3.1 or newer. GCC, Clang, and Visual Studio 2019 are known to work for compiling mGBA.
+Then copy this overlay into the root of your fresh mGBA fork and run:
 
-#### Docker building
+```bash
+./setup.sh
+```
 
-The recommended way to build for most platforms is to use Docker. Several Docker images are provided that contain the requisite toolchain and dependencies for building mGBA across several platforms.
+That one command:
 
-Note: If you are on an older Windows system before Windows 10, you may need to configure your Docker to use VirtualBox shared folders to correctly map your current `mgba` checkout directory to the Docker image's working directory. (See issue [#1985](https://mgba.io/i/1985) for details.)
+1. installs the Ubuntu/WSL build dependencies;
+2. adds `externals/GBAVirtualCart` as a real Git submodule;
+3. checks out `v1.0.0`;
+4. builds GBAVirtualCart and runs its self-test;
+5. builds mGBA SDL, Qt, headless, AutoQA and the GBAVirtualCart self-test;
+6. verifies that the virtual-cart functions are actually linked into `libmgba.so`.
 
-To use a Docker image to build mGBA, simply run the following command while in the root of an mGBA checkout:
+If your GBAVirtualCart fork uses another URL:
 
-	docker run --rm -it -v ${PWD}:/home/mgba/src mgba/windows:w32
+```bash
+GBAVC_REPO=https://github.com/YOURNAME/GBAVirtualCart.git ./setup.sh
+```
 
-After starting the Docker container, it will produce a `build-win32` directory with the build products. Replace `mgba/windows:w32` with another Docker image for other platforms, which will produce a corresponding other directory. The following Docker images available on Docker Hub:
+If you want another branch/tag/commit:
 
-- mgba/3ds
-- mgba/switch
-- mgba/ubuntu:xenial
-- mgba/ubuntu:bionic
-- mgba/ubuntu:focal
-- mgba/ubuntu:groovy
-- mgba/vita
-- mgba/wii
-- mgba/windows:w32
-- mgba/windows:w64
+```bash
+GBAVC_REF=my-branch ./setup.sh
+```
 
-If you want to speed up the build process, consider adding the flag `-e MAKEFLAGS=-jN` to do a parallel build for mGBA with `N` number of CPU cores.
+If dependencies are already installed:
 
-#### *nix building
+```bash
+./setup.sh --no-apt
+```
 
-To use CMake to build on a Unix-based system, the recommended commands are as follows:
+## Normal rebuild
 
-	mkdir build
-	cd build
-	cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
-	make
-	sudo make install
+```bash
+./build.sh
+```
 
-This will build and install mGBA into `/usr/bin` and `/usr/lib`. Dependencies that are installed will be automatically detected, and features that are disabled if the dependencies are not found will be shown after running the `cmake` command after warnings about being unable to find them.
+Clean rebuild:
 
-If you are on macOS, the steps are a little different. Assuming you are using the homebrew package manager, the recommended commands to obtain the dependencies and build are:
+```bash
+./build.sh --clean
+```
 
-	brew install cmake ffmpeg libzip qt5 sdl2 libedit lua pkg-config
-	mkdir build
-	cd build
-	cmake -DCMAKE_PREFIX_PATH=`brew --prefix qt5` ..
-	make
+Headless-only developer build:
 
-Note that you should not do a `make install` on macOS, as it will not work properly.
+```bash
+./build.sh --clean --headless
+```
 
-#### Windows developer building
+The normal build creates convenient launchers at the repository root when the frontends are available:
 
-##### MSYS2
+```text
+./mgba-sdl
+./mgba-qt
+./mgba-headless
+./mgba.sh
+```
 
-To build on Windows for development, using MSYS2 is recommended. Follow the installation steps found on their [website](https://msys2.github.io). Make sure you're running the 32-bit version ("MSYS2 MinGW 32-bit") (or the 64-bit version "MSYS2 MinGW 64-bit" if you want to build for x86_64) and run this additional command (including the braces) to install the needed dependencies (please note that this involves downloading over 1100MiB of packages, so it will take a long time):
+## Main menu
 
-	pacman -Sy --needed base-devel git ${MINGW_PACKAGE_PREFIX}-{cmake,ffmpeg,gcc,gdb,libelf,libepoxy,libzip,lua,pkgconf,qt5,SDL2,ntldd-git}
+Run:
 
-Check out the source code by running this command:
+```bash
+./mgba.sh
+```
 
-	git clone https://github.com/mgba-emu/mgba.git
+Useful entries include:
 
-Then finally build it by running these commands:
+- batch ROM/cart scan;
+- one-ROM/one-cart test;
+- AutoQA/regression;
+- checkpoint/movie recording;
+- boot an existing melonDS virtual cart;
+- list shared GBAVirtualCart backings;
+- run the mGBA/GBAVirtualCart qualification suite.
 
-	mkdir -p mgba/build
-	cd mgba/build
-	cmake .. -G "MSYS Makefiles"
-	make -j$(nproc --ignore=1)
+## Boot the same virtual cart used by melonDS
 
-Please note that this build of mGBA for Windows is not suitable for distribution, due to the scattering of DLLs it needs to run, but is perfect for development. However, if distributing such a build is desired (e.g. for testing on machines that don't have the MSYS2 environment installed), running `cpack -G ZIP` will prepare a zip file with all of the necessary DLLs.
+The menu can automatically reuse the `CART_DIR` saved by the matching melonDS launcher. You can also choose the cart folder manually in the mGBA menu.
 
-##### Visual Studio
+For direct use:
 
-To build using Visual Studio is a similarly complicated setup. To begin you will need to install [vcpkg](https://github.com/Microsoft/vcpkg). After installing vcpkg you will need to install several additional packages:
+```bash
+python3 tools/mgba/mgba_virtual_cart.py --cart-dir /path/to/carts --profile s29
+```
 
-    vcpkg install ffmpeg[vpx,x264] libepoxy libpng libzip lua sdl2 sqlite3
+or:
 
-Note that this installation won't support hardware accelerated video encoding on Nvidia hardware. If you care about this, you'll need to install CUDA beforehand, and then substitute `ffmpeg[vpx,x264,nvcodec]` into the previous command.
+```bash
+python3 tools/mgba/mgba_virtual_cart.py --cart-dir /path/to/carts --profile m36
+```
 
-You will also need to install Qt. Unfortunately due to Qt being owned and run by an ailing company as opposed to a reasonable organization there is no longer an offline open source edition installer for the latest version, so you'll need to either fall back to an [old version installer](https://download.qt.io/archive/qt/5.12/5.12.9/qt-opensource-windows-x86-5.12.9.exe) (which wants you to create an otherwise-useless account, but you can bypass temporarily setting an invalid proxy or otherwise disabling networking), use the online installer (which requires an account regardless), or use vcpkg to build it (slowly). None of these are great options. For the installer you'll want to install the applicable MSVC versions. Note that the offline installers do not support MSVC 2019. For vcpkg you'll want to install it as such, which will take quite a while, especially on quad core or less computers:
+Interactive cart boot prefers `mgba-sdl`. Force Qt only when wanted:
 
-    vcpkg install qt5-base qt5-multimedia
+```bash
+python3 tools/mgba/mgba_virtual_cart.py --cart-dir /path/to/carts --profile s29 --qt
+```
 
-Next, open Visual Studio, select Clone Repository, and enter `https://github.com/mgba-emu/mgba.git`. When Visual Studio is done cloning, go to File > CMake and open the CMakeLists.txt file at the root of the checked out repository. From there, mGBA can be developed in Visual Studio similarly to other Visual Studio CMake projects.
+List detected backings:
 
-#### Toolchain building
+```bash
+python3 tools/mgba/mgba_virtual_cart.py --cart-dir /path/to/carts --list
+```
 
-If you have devkitARM (for 3DS), devkitPPC (for Wii), devkitA64 (for Switch), or vitasdk (for PS Vita), you can use the following commands for building:
+## Persistent files
 
-	mkdir build
-	cd build
-	cmake -DCMAKE_TOOLCHAIN_FILE=../src/platform/3ds/CMakeToolchain.txt ..
-	make
+Typical backing names are supplied by GBAVirtualCart profiles, for example:
 
-Replace the `-DCMAKE_TOOLCHAIN_FILE` parameter for the following platforms:
+```text
+mini128.nor
+mini128.fram
+m36.nor
+m6m.nor
+```
 
-- 3DS: `../src/platform/3ds/CMakeToolchain.txt`
-- Switch: `../src/platform/switch/CMakeToolchain.txt`
-- Vita: `../src/platform/psp2/CMakeToolchain.vitasdk`
-- Wii: `../src/platform/wii/CMakeToolchain.txt`
+mGBA writes its own event trace next to the backing using a separate `.mgba.jsonl` name, so the melonDS trace is not overwritten.
 
-### Dependencies
+The mGBA helper settings are stored separately from normal upstream mGBA configuration under:
 
-mGBA has no hard dependencies, however, the following optional dependencies are required for specific features. The features will be disabled if the dependencies can't be found.
+```text
+~/.config/mgba-gbavc/
+```
 
-- Qt 5: for the GUI frontend. Qt Multimedia or SDL are required for audio.
-- SDL: for a more basic frontend and gamepad support in the Qt frontend. SDL 2 is recommended, but 1.2 is supported.
-- zlib and libpng: for screenshot support and savestate-in-PNG support.
-- libedit: for command-line debugger support.
-- ffmpeg or libav: for video, GIF, WebP, and APNG recording.
-- libzip or zlib: for loading ROMs stored in zip files.
-- SQLite3: for game databases.
-- libelf: for ELF loading.
-- Lua: for scripting.
-- json-c: for the scripting `storage` API.
+## Qualification
 
-SQLite3, libpng, and zlib are included with the emulator, so they do not need to be externally compiled first.
+After a build, run:
 
-Footnotes
----------
+```bash
+./tools/mgba/test.sh build
+```
 
-<a name="missing">[1]</a> Currently missing features are
+The test checks:
 
-- OBJ window for modes 3, 4 and 5 ([Bug #5](http://mgba.io/b/5))
+- `src/gba/CMakeLists.txt` actually includes `cart/gbabr.c`;
+- mGBA bus/protocol self-test passes;
+- every required `GBAGBABR*` function is defined by `libmgba.so`;
+- Python helper tools compile;
+- old development branding is absent from the fork-specific files.
 
-<a name="flashdetect">[2]</a> Flash memory size detection does not work in some cases. These can be configured at runtime, but filing a bug is recommended if such a case is encountered.
+The `libmgba.so` symbol check specifically prevents a previous packaging failure where `gbabr.c` was present in the overlay but missing from `src/gba/CMakeLists.txt`, which caused linker errors such as undefined references to `GBAGBABRTryActivate`, `GBAGBABRReadROM16`, `GBAGBABRDestroy`, and related functions.
 
-<a name="osxver">[3]</a> 10.9 is only needed for the Qt port. It may be possible to build or run the Qt port on 10.7 or older, but this is not officially supported. The SDL port is known to work on 10.5, and may work on older.
+## Current validation state
 
-[downloads]: http://mgba.io/downloads.html
-[source]: https://github.com/mgba-emu/mgba/
+The cleaned v1.0 overlay was compiled in shared-library/headless mode with GBAVirtualCart v1.0.0:
 
-Copyright
----------
+```text
+GBAVirtualCart native self-test: 27 PASS / 0 FAIL
+mGBA bus/protocol self-test:     PASS / 0 failures
+libmgba GBAGBABR symbol check:   PASS
+Python helper compile:           PASS
+```
 
-mGBA is Copyright © 2013 – 2026 Jeffrey Pfau. It is distributed under the [Mozilla Public License version 2.0](https://www.mozilla.org/MPL/2.0/). A copy of the license is available in the distributed LICENSE file.
+M36 virtual-cart interoperability between melonDS and mGBA has been exercised successfully, including save persistence. S29/Mini128 single-cart boot/save has also been exercised after updating the cart menu.
 
-mGBA contains the following third-party libraries:
+### Known S29 follow-up
 
-- [inih](https://github.com/benhoyt/inih), which is copyright © 2009 – 2020 Ben Hoyt and used under a BSD 3-clause license.
-- [LZMA SDK](http://www.7-zip.org/sdk.html), which is public domain.
-- [MurmurHash3](https://github.com/aappleby/smhasher) implementation by Austin Appleby, which is public domain.
-- [getopt for MSVC](https://github.com/skandhurkat/Getopt-for-Visual-Studio/), which is public domain.
-- [SQLite3](https://www.sqlite.org), which is public domain.
+A more complex Mini128 multi-game sequence has exposed a remaining S29/shared-cart issue during repeated installs/save transitions. Keep that as a **GBAVirtualCart/S29 model follow-up**. Do not hide it with frontend-specific workarounds. Preserve failing `mini128.nor`/`mini128.fram` fixtures when reproducing it.
 
-If you are a game publisher and wish to license mGBA for commercial usage, please email [licensing@mgba.io](mailto:licensing@mgba.io) for more information.
+## Applying this overlay to an existing fork
+
+If you already copied an older development overlay into your fork, use the included updater:
+
+```bash
+./APPLY_TO_FORK.sh ~/path/to/your/mgba
+cd ~/path/to/your/mgba
+./setup.sh
+```
+
+It removes the obsolete development-branded launcher/tool directory, copies the corrected files (including the previously omitted `src/gba/CMakeLists.txt` and Qt controller header), and then the normal setup performs a clean build.
+
+## Git commit
+
+After setup succeeds:
+
+```bash
+git status
+git add .
+git commit -m "Add GBAVirtualCart integration v1.0"
+git push
+```
+
+`externals/GBAVirtualCart` should appear as a **Git submodule pointer**, not as duplicated source files.
+
+## Upstream
+
+This is a fork of the mGBA project. mGBA remains under its upstream Mozilla Public License 2.0 terms. GBAVirtualCart is maintained separately as the shared cartridge-emulation module used by both emulator forks.

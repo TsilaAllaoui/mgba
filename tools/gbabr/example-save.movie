@@ -1,0 +1,8 @@
+# frame keys
+# Key state remains held until the next line.
+0 NONE
+120 START
+122 NONE
+180 A
+182 NONE
+# Add the game's save-menu navigation here.

@@ -61,16 +61,7 @@ InputController::InputController(QWidget* topLevel, QObject* parent)
 	connect(&m_videoDumper, &VideoDumper::imageAvailable, this, &InputController::setCamImage);
 #endif
 
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_X, GBA_KEY_A);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Z, GBA_KEY_B);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_A, GBA_KEY_L);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_S, GBA_KEY_R);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Return, GBA_KEY_START);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Backspace, GBA_KEY_SELECT);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Up, GBA_KEY_UP);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Down, GBA_KEY_DOWN);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Left, GBA_KEY_LEFT);
-	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Right, GBA_KEY_RIGHT);
+	bindKeyboardDefaults();
 
 
 #ifdef M_CORE_GBA
@@ -150,6 +141,28 @@ InputController::InputController(QWidget* topLevel, QObject* parent)
 	};
 }
 
+void InputController::bindKeyboardDefaults() {
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_X, GBA_KEY_A);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Z, GBA_KEY_B);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_A, GBA_KEY_L);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_S, GBA_KEY_R);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Return, GBA_KEY_START);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Backspace, GBA_KEY_SELECT);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Up, GBA_KEY_UP);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Down, GBA_KEY_DOWN);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Left, GBA_KEY_LEFT);
+	mInputBindKey(&m_inputMap, KEYBOARD, Qt::Key_Right, GBA_KEY_RIGHT);
+}
+
+bool InputController::hasKeyboardBindings() const {
+	for (int key = 0; key < GBA_KEY_MAX; ++key) {
+		if (mInputQueryBinding(&m_inputMap, KEYBOARD, key) >= 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 InputController::~InputController() {
 	mInputMapDeinit(&m_inputMap);
 	freePlayer(m_playerId);
@@ -166,6 +179,15 @@ void InputController::addInputDriver(std::shared_ptr<InputDriver> driver) {
 void InputController::setConfiguration(ConfigController* config) {
 	m_config = config;
 	loadConfiguration(KEYBOARD);
+	// A partially-created/isolated mGBA input section can legally load while
+	// containing -1 for every GBA key.  That leaves the Qt Keyboard page
+	// showing only -1 and the emulator effectively uncontrollable.  Treat an
+	// entirely empty keyboard map as corrupt/uninitialized and restore mGBA's
+	// normal defaults.  Individual unbound keys are preserved.
+	if (!hasKeyboardBindings()) {
+		bindKeyboardDefaults();
+		saveConfiguration(KEYBOARD);
+	}
 	for (auto& driver : m_inputDrivers) {
 		driver->loadConfiguration(config);
 	}

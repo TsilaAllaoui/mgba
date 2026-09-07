@@ -143,6 +143,8 @@ private:
 	void clearPendingEvents(int keys);
 	bool hasPendingEvent(int key) const;
 	void sendGamepadEvent(QEvent*);
+	void bindKeyboardDefaults();
+	bool hasKeyboardBindings() const;
 
 	static int claimPlayer();
 	static void freePlayer(int);

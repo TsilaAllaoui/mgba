@@ -23,6 +23,7 @@ enum GBAUnlCartType {
 	GBA_UNL_CART_NONE = 0,
 	GBA_UNL_CART_VFAME = 1,
 	GBA_UNL_CART_MULTICART = 2,
+	GBA_UNL_CART_GBABR = 3,
 };
 
 struct GBAVFameCart {
@@ -46,11 +47,14 @@ struct GBAMulticart {
 	uint8_t unk;
 };
 
+struct GBAGBABRCart;
+
 struct GBAUnlCart {
 	enum GBAUnlCartType type;
 	union {
 		struct GBAVFameCart vfame;
 		struct GBAMulticart multi;
+		struct GBAGBABRCart* gbabr;
 	};
 };
 
@@ -62,6 +66,9 @@ void GBAUnlCartUnload(struct GBA*);
 void GBAUnlCartDetect(struct GBA*);
 void GBAUnlCartWriteSRAM(struct GBA*, uint32_t address, uint8_t value);
 void GBAUnlCartWriteROM(struct GBA*, uint32_t address, uint16_t value);
+bool GBAUnlCartReadROM16(struct GBA*, uint32_t address, uint16_t* value);
+bool GBAUnlCartReadROM32(struct GBA*, uint32_t address, uint32_t* value);
+bool GBAUnlCartReadSRAM(struct GBA*, uint32_t address, uint8_t* value);
 
 struct GBASerializedState;
 void GBAUnlCartSerialize(const struct GBA* gba, struct GBASerializedState* state);

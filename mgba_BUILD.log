@@ -1,0 +1,654 @@
+[1/3] GBAVirtualCart native build/selftest
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (2.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/tsila/gba/mgba/externals/GBAVirtualCart/build
+[1/4] Building CXX object CMakeFiles/gbavc-selftest.dir/tests/selftest.cpp.o
+[2/4] Building CXX object CMakeFiles/gbavirtualcart.dir/src/gbavc.cpp.o
+[3/4] Linking CXX static library libgbavirtualcart.a
+[4/4] Linking CXX executable gbavc-selftest
+Internal ctest changing into directory: /home/tsila/gba/mgba/externals/GBAVirtualCart/build
+Test project /home/tsila/gba/mgba/externals/GBAVirtualCart/build
+    Start 1: gbavc-selftest
+1/1 Test #1: gbavc-selftest ...................   Passed    0.23 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.24 sec
+profile registry exposes at least seven built-in profiles        PASS
+alias lookup resolves m6 -> m6m                                  PASS
+construct profile s29                                            PASS
+capacity matches profile s29                                     PASS
+construct profile m36                                            PASS
+capacity matches profile m36                                     PASS
+construct profile m6m                                            PASS
+capacity matches profile m6m                                     PASS
+construct profile m6mgd137                                       PASS
+capacity matches profile m6mgd137                                PASS
+construct profile m28w640fs-t70za6                               PASS
+capacity matches profile m28w640fs-t70za6                        PASS
+construct profile mx26l6420mc-90                                 PASS
+capacity matches profile mx26l6420mc-90                          PASS
+construct profile m6mgd967-diagnostic                            PASS
+capacity matches profile m6mgd967-diagnostic                     PASS
+S29 exact four-word JEDEC ID                                     PASS
+S29 buffer payload treats command-looking halfwords as data      PASS
+S29 exposes shared physical NOR                                  PASS
+M36 JEDEC ID 0020/88C4                                           PASS
+M36 E8 ready after unlock                                        PASS
+M36 second mask program remains ready, no ST0090                 PASS
+M36 programming is old & payload (7A76)                          PASS
+M36 status mode is bank-local across 1 MiB RWW banks             PASS
+M6 JEDEC ID 001C/00B9                                            PASS
+M6 Intel 0x40 word programming                                   PASS
+M6 64 KiB erase                                                  PASS
+
+RESULT: PASS (27 PASS / 0 FAIL)
+
+GBAVirtualCart v1.0.0 ready: /home/tsila/gba/mgba/externals/GBAVirtualCart/build/libgbavirtualcart.a
+[2/3] mGBA/mgba build
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1") 
+-- Looking for strdup
+-- Looking for strdup - found
+-- Looking for strlcpy
+-- Looking for strlcpy - found
+-- Looking for strndup
+-- Looking for strndup - found
+-- Looking for vasprintf
+-- Looking for vasprintf - found
+-- Looking for freelocale
+-- Looking for freelocale - found
+-- Looking for newlocale
+-- Looking for newlocale - found
+-- Looking for setlocale
+-- Looking for setlocale - found
+-- Looking for snprintf_l
+-- Looking for snprintf_l - not found
+-- Looking for uselocale
+-- Looking for uselocale - found
+-- Looking for popcount32
+-- Looking for popcount32 - not found
+-- Looking for futimens
+-- Looking for futimens - found
+-- Looking for futimes
+-- Looking for futimes - found
+-- Looking for localtime_r
+-- Looking for localtime_r - found
+-- Looking for realpath
+-- Looking for realpath - found
+-- Looking for include file xlocale.h
+-- Looking for include file xlocale.h - not found
+-- Looking for include file pthread.h
+-- Looking for include file pthread.h - found
+-- Performing Test HAVE_PTHREAD
+-- Performing Test HAVE_PTHREAD - Success
+-- Looking for pthread_create
+-- Looking for pthread_create - found
+-- Looking for include file pthread_np.h
+-- Looking for include file pthread_np.h - not found
+-- Looking for pthread_setname_np
+-- Looking for pthread_setname_np - found
+-- Looking for pthread_set_name_np
+-- Looking for pthread_set_name_np - not found
+-- Checking for one of the modules 'libedit'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libedit missing for feature USE_EDITLINE.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:424 (find_feature)
+
+
+-- Checking for one of the modules 'minizip'
+-- Checking for one of the modules 'libzip'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libzip missing for feature USE_LIBZIP.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:523 (find_feature)
+
+
+-- Checking for one of the modules 'SQLite3'
+-- Checking for one of the modules 'sqlite3'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module SQLite3|sqlite3 missing for feature USE_SQLITE3.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:526 (find_feature)
+
+
+-- Checking for one of the modules 'libelf'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libelf missing for feature USE_ELF.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:527 (find_feature)
+
+
+-- Looking for unztell64
+-- Looking for unztell64 - found
+-- Checking for one of the modules 'Lua'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module Lua missing for feature USE_LUA.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:799 (find_feature)
+
+
+CMake Warning at src/platform/sdl/CMakeLists.txt:4 (find_package):
+  By not providing "FindSDL3.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "SDL3", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "SDL3" with any of
+  the following names:
+
+    SDL3Config.cmake
+    sdl3-config.cmake
+
+  Add the installation prefix of "SDL3" to CMAKE_PREFIX_PATH or set
+  "SDL3_DIR" to a directory containing one of the above files.  If "SDL3"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+
+
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Found SDL2: /usr/lib/x86_64-linux-gnu/libSDL2.so  
+-- Performing Test HAVE_STDATOMIC
+-- Performing Test HAVE_STDATOMIC - Success
+-- Found WrapAtomic: TRUE  
+-- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so   
+-- Found WrapOpenGL: TRUE  
+-- Found XKB: /usr/lib/x86_64-linux-gnu/libxkbcommon.so (found suitable version "1.6.0", minimum required is "0.5.0") 
+-- Found WrapVulkanHeaders: /usr/include  
+CMake Warning at src/platform/qt/CMakeLists.txt:398 (find_package):
+  By not providing "FindQt6LinguistTools.cmake" in CMAKE_MODULE_PATH this
+  project has asked CMake to find a package configuration file provided by
+  "Qt6LinguistTools", but CMake did not find one.
+
+  Could not find a package configuration file provided by "Qt6LinguistTools"
+  with any of the following names:
+
+    Qt6LinguistToolsConfig.cmake
+    qt6linguisttools-config.cmake
+
+  Add the installation prefix of "Qt6LinguistTools" to CMAKE_PREFIX_PATH or
+  set "Qt6LinguistTools_DIR" to a directory containing one of the above
+  files.  If "Qt6LinguistTools" provides a separate development package or
+  SDK, be sure it has been installed.
+
+
+-- Build type: Release
+-- Platforms:
+-- 	Game Boy Advance: ON
+-- 	Game Boy: ON
+-- Features:
+-- 	Debuggers: ON
+-- 	CLI debugger: OFF
+-- 	GDB stub: ON
+-- 	GIF/Video recording: OFF
+-- 	Screenshot/advanced savestate support: ON
+-- 	ZIP support: minizip (external)
+-- 	7-Zip support: ON
+-- 	SQLite3 game database: ON
+-- 	ELF loading support: OFF
+-- 	Discord Rich Presence support: ON
+-- 	OpenGL support: libepoxy
+-- Scripting support: ON
+-- 	Lua: OFF
+-- 	storage API: ON
+-- 	Font rendering: ON
+-- Frontends:
+-- 	Qt: ON
+-- 	SDL (2): ON
+-- 	Headless: ON
+-- 	Python bindings: OFF
+-- 	Examples: OFF
+-- Test tools:
+-- 	Profiling: OFF
+-- 	Test harness: OFF
+-- 	Test suite: OFF
+-- 	Video test suite: OFF
+-- Cores:
+-- 	Libretro core: OFF
+-- Libraries:
+-- 	Static: OFF
+-- 	Shared: ON
+-- Configuring done (22.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/tsila/gba/mgba/build-mgba
+[1/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zAlloc.c.o
+[2/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zBuf.c.o
+[3/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zBuf2.c.o
+[4/409] Building C object CMakeFiles/updater-stub.dir/src/util/vfs/vfs-fifo.c.o
+[5/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zCrc.c.o
+[6/409] Building C object CMakeFiles/updater-stub.dir/src/util/vfs/vfs-dirent.c.o
+[7/409] Building C object CMakeFiles/updater-stub.dir/src/util/vfs/vfs-fd.c.o
+/home/tsila/gba/mgba/src/util/vfs/vfs-fd.c: In function ‘_vfdTruncate’:
+/home/tsila/gba/mgba/src/util/vfs/vfs-fd.c:234:9: warning: ignoring return value of ‘ftruncate’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  234 |         ftruncate(vfd->fd, size);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~
+[8/409] Building C object CMakeFiles/updater-stub.dir/src/util/vfs/vfs-mem.c.o
+[9/409] Building C object CMakeFiles/updater-stub.dir/src/util/vfs/vfs-zip.c.o
+[10/409] Building C object CMakeFiles/updater-stub.dir/src/util/vfs/vfs-lzma.c.o
+[11/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zCrcOpt.c.o
+[12/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/CpuArch.c.o
+[13/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/Delta.c.o
+[14/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zArcIn.c.o
+[15/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/Bra.c.o
+[16/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/Bra86.c.o
+[17/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/BraIA64.c.o
+[18/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zDec.c.o
+[19/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/Bcj2.c.o
+[20/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/Lzma2Dec.c.o
+[21/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/Ppmd7Dec.c.o
+[22/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zStream.c.o
+[23/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/7zFile.c.o
+[24/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/LzmaDec.c.o
+[25/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/lzma/Ppmd7.c.o
+[26/409] Building C object CMakeFiles/updater-stub.dir/src/platform/posix/memory.c.o
+[27/409] Building C object CMakeFiles/updater-stub.dir/src/util/configuration.c.o
+[28/409] Building C object CMakeFiles/updater-stub.dir/src/util/crc32.c.o
+[29/409] Building C object CMakeFiles/updater-stub.dir/src/util/circle-buffer.c.o
+[30/409] Building C object CMakeFiles/updater-stub.dir/src/util/formatting.c.o
+[31/409] Building C object CMakeFiles/updater-stub.dir/src/util/gbk-table.c.o
+[32/409] Building C object CMakeFiles/updater-stub.dir/src/util/hash.c.o
+[33/409] Building C object CMakeFiles/updater-stub.dir/version.c.o
+[34/409] Building C object CMakeFiles/updater-stub.dir/src/util/md5.c.o
+[35/409] Building C object CMakeFiles/updater-stub.dir/src/third-party/inih/ini.c.o
+[36/409] Building C object CMakeFiles/updater-stub.dir/src/util/sha1.c.o
+[37/409] Building C object CMakeFiles/updater-stub.dir/src/util/vfs.c.o
+[38/409] Building C object CMakeFiles/updater-stub.dir/src/util/string.c.o
+[39/409] Building C object CMakeFiles/updater-stub.dir/src/feature/updater.c.o
+[40/409] cd /home/tsila/gba/mgba && /usr/bin/cmake -DBINARY_NAME=mgba -DCONFIG_FILE=/home/tsila/gba/mgba/src/core/version.c.in -DOUT_FILE=/home/tsila/gba/mgba/build-mgba/version.c -P /home/tsila/gba/mgba/version.cmake
+[41/409] Building C object CMakeFiles/updater-stub.dir/src/util/table.c.o
+[42/409] Building C object CMakeFiles/updater-stub.dir/src/util/vector.c.o
+[43/409] Building C object CMakeFiles/updater-stub.dir/src/core/config.c.o
+/home/tsila/gba/mgba/src/core/config.c: In function ‘mCoreConfigPortableIniPath’:
+/home/tsila/gba/mgba/src/core/config.c:304:9: warning: ignoring return value of ‘getcwd’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  304 |         getcwd(out, outLength);
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+[44/409] Building C object CMakeFiles/updater-stub.dir/src/tools/updater-main.c.o
+[45/409] Building C object CMakeFiles/mgba.dir/src/core/bitmap-cache.c.o
+[46/409] Building C object CMakeFiles/mgba.dir/src/core/cache-set.c.o
+[47/409] Building C object CMakeFiles/mgba.dir/src/core/config.c.o
+/home/tsila/gba/mgba/src/core/config.c: In function ‘mCoreConfigPortableIniPath’:
+/home/tsila/gba/mgba/src/core/config.c:304:9: warning: ignoring return value of ‘getcwd’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  304 |         getcwd(out, outLength);
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+[48/409] Building C object CMakeFiles/mgba.dir/src/core/cheats.c.o
+[49/409] Building C object CMakeFiles/mgba.dir/src/core/core.c.o
+[50/409] Building C object CMakeFiles/mgba.dir/src/core/directories.c.o
+[51/409] Building C object CMakeFiles/mgba.dir/src/core/interface.c.o
+[52/409] Building C object CMakeFiles/mgba.dir/src/core/input.c.o
+[53/409] Building C object CMakeFiles/mgba.dir/src/core/lockstep.c.o
+[54/409] Building C object CMakeFiles/mgba.dir/src/core/map-cache.c.o
+[55/409] Building C object CMakeFiles/mgba.dir/src/core/log.c.o
+[56/409] Building C object CMakeFiles/mgba.dir/src/core/mem-search.c.o
+[57/409] Building C object CMakeFiles/mgba.dir/src/core/rewind.c.o
+[58/409] Building C object CMakeFiles/mgba.dir/src/core/sync.c.o
+[59/409] Building C object CMakeFiles/mgba.dir/src/core/serialize.c.o
+[60/409] Building C object CMakeFiles/mgba.dir/src/core/thread.c.o
+[61/409] Building C object CMakeFiles/mgba.dir/src/core/timing.c.o
+[62/409] Building C object CMakeFiles/mgba.dir/src/core/tile-cache.c.o
+[63/409] Building C object CMakeFiles/mgba.dir/src/core/library.c.o
+[64/409] Building C object CMakeFiles/mgba.dir/src/sm83/sm83.c.o
+[65/409] Building CXX object discord-rpc/src/CMakeFiles/discord-rpc.dir/rpc_connection.cpp.o
+[66/409] Building C object CMakeFiles/mgba.dir/src/sm83/decoder.c.o
+[67/409] Building C object CMakeFiles/mgba.dir/src/gb/cheats.c.o
+[68/409] Building C object CMakeFiles/mgba.dir/src/gb/input.c.o
+[69/409] Building C object CMakeFiles/mgba.dir/src/gb/audio.c.o
+[70/409] Building C object CMakeFiles/mgba.dir/src/gb/gb.c.o
+[71/409] Building C object CMakeFiles/mgba.dir/src/gb/core.c.o
+[72/409] Building C object CMakeFiles/mgba.dir/src/sm83/isa-sm83.c.o
+[73/409] Building C object CMakeFiles/mgba.dir/src/gb/io.c.o
+[74/409] Building C object CMakeFiles/mgba.dir/src/gb/mbc.c.o
+[75/409] Building C object CMakeFiles/mgba.dir/src/gb/mbc/huc-3.c.o
+[76/409] Building CXX object discord-rpc/src/CMakeFiles/discord-rpc.dir/discord_rpc.cpp.o
+[77/409] Building C object CMakeFiles/mgba.dir/src/gb/mbc/licensed.c.o
+[78/409] Building C object CMakeFiles/mgba.dir/src/gb/mbc/pocket-cam.c.o
+[79/409] Building C object CMakeFiles/mgba.dir/src/gb/mbc/mbc.c.o
+[80/409] Building C object CMakeFiles/mgba.dir/src/gb/mbc/tama5.c.o
+[81/409] Building C object CMakeFiles/mgba.dir/src/gb/mbc/unlicensed.c.o
+[82/409] Building C object CMakeFiles/mgba.dir/src/gb/renderers/cache-set.c.o
+[83/409] Building C object CMakeFiles/mgba.dir/src/gb/overrides.c.o
+[84/409] Building C object CMakeFiles/mgba.dir/src/gb/serialize.c.o
+[85/409] Building C object CMakeFiles/mgba.dir/src/gb/memory.c.o
+[86/409] Building C object CMakeFiles/mgba.dir/src/gb/sio.c.o
+[87/409] Building C object CMakeFiles/mgba.dir/src/gb/timer.c.o
+[88/409] Building C object CMakeFiles/mgba.dir/src/gb/renderers/software.c.o
+[89/409] Building C object CMakeFiles/mgba.dir/src/arm/arm.c.o
+[90/409] Building C object CMakeFiles/mgba.dir/src/arm/decoder.c.o
+[91/409] Building C object CMakeFiles/mgba.dir/src/arm/decoder-thumb.c.o
+[92/409] Building C object CMakeFiles/mgba.dir/src/gb/video.c.o
+[93/409] Building C object CMakeFiles/mgba.dir/src/arm/isa-thumb.c.o
+[94/409] Building C object CMakeFiles/mgba.dir/src/gba/audio.c.o
+[95/409] Building C object CMakeFiles/mgba.dir/src/gba/bios.c.o
+[96/409] Building C object CMakeFiles/mgba.dir/src/gba/cart/ereader.c.o
+[97/409] Building C object CMakeFiles/mgba.dir/src/gba/cart/gpio.c.o
+[98/409] Building C object CMakeFiles/mgba.dir/src/gba/cart/matrix.c.o
+[99/409] Building C object CMakeFiles/mgba.dir/src/gba/cart/vfame.c.o
+[100/409] Building C object CMakeFiles/mgba.dir/src/gba/cart/unlicensed.c.o
+[101/409] Building C object CMakeFiles/mgba.dir/src/gba/cheats.c.o
+[102/409] Building C object CMakeFiles/mgba.dir/src/arm/decoder-arm.c.o
+[103/409] Building C object CMakeFiles/mgba.dir/src/gba/cheats/codebreaker.c.o
+[104/409] Building C object CMakeFiles/mgba.dir/src/gba/cheats/gameshark.c.o
+[105/409] Building C object CMakeFiles/mgba.dir/src/gba/cheats/parv3.c.o
+[106/409] Building C object CMakeFiles/mgba.dir/src/gba/hle-bios.c.o
+[107/409] Building C object CMakeFiles/mgba.dir/src/gba/input.c.o
+[108/409] Building C object CMakeFiles/mgba.dir/src/gba/dma.c.o
+[109/409] Building C object CMakeFiles/mgba.dir/src/gba/gba.c.o
+[110/409] Building C object CMakeFiles/mgba.dir/src/gba/renderers/common.c.o
+[111/409] Building C object CMakeFiles/mgba.dir/src/gba/io.c.o
+[112/409] Building C object CMakeFiles/mgba.dir/src/gba/overrides.c.o
+[113/409] Building C object CMakeFiles/mgba.dir/src/gba/core.c.o
+[114/409] Building C object CMakeFiles/mgba.dir/src/arm/isa-arm.c.o
+[115/409] Building C object CMakeFiles/mgba.dir/src/gba/renderers/cache-set.c.o
+[116/409] Building C object CMakeFiles/mgba.dir/src/gba/renderers/software-obj.c.o
+[117/409] Building C object CMakeFiles/mgba.dir/src/gba/renderers/software-bg.c.o
+[118/409] Building C object CMakeFiles/mgba.dir/src/gba/renderers/video-software.c.o
+[119/409] Building C object CMakeFiles/mgba.dir/src/gba/memory.c.o
+[120/409] Building C object CMakeFiles/mgba.dir/src/gba/renderers/gl.c.o
+[121/409] Building C object CMakeFiles/mgba.dir/src/gba/savedata.c.o
+[122/409] Building C object CMakeFiles/mgba.dir/src/gba/sharkport.c.o
+[123/409] Building C object CMakeFiles/mgba.dir/src/gba/sio.c.o
+[124/409] Building C object CMakeFiles/mgba.dir/src/gba/serialize.c.o
+[125/409] Building C object CMakeFiles/mgba.dir/src/gba/sio/gbp.c.o
+[126/409] Building C object CMakeFiles/mgba.dir/src/gba/timer.c.o
+[127/409] Building C object CMakeFiles/mgba.dir/src/util/circle-buffer.c.o
+[128/409] Building C object CMakeFiles/mgba.dir/src/gba/renderers/software-mode0.c.o
+[129/409] Building C object CMakeFiles/mgba.dir/src/util/crc32.c.o
+[130/409] Building C object CMakeFiles/mgba.dir/src/util/configuration.c.o
+[131/409] Building C object CMakeFiles/mgba.dir/src/util/formatting.c.o
+[132/409] Building C object CMakeFiles/mgba.dir/src/gba/video.c.o
+[133/409] Building C object CMakeFiles/mgba.dir/src/util/gbk-table.c.o
+[134/409] Building C object CMakeFiles/mgba.dir/src/util/hash.c.o
+[135/409] Building C object CMakeFiles/mgba.dir/src/util/md5.c.o
+[136/409] Building C object CMakeFiles/mgba.dir/src/util/sha1.c.o
+[137/409] Building C object CMakeFiles/mgba.dir/src/util/string.c.o
+[138/409] Building C object CMakeFiles/mgba.dir/src/util/audio-buffer.c.o
+[139/409] Building C object CMakeFiles/mgba.dir/src/util/vfs.c.o
+[140/409] Building C object CMakeFiles/mgba.dir/src/util/table.c.o
+[141/409] Building C object CMakeFiles/mgba.dir/src/util/audio-resampler.c.o
+[142/409] Building C object CMakeFiles/mgba.dir/src/util/vector.c.o
+[143/409] Building C object CMakeFiles/mgba.dir/src/util/elf-read.c.o
+[144/409] Building C object CMakeFiles/mgba.dir/src/util/convolve.c.o
+[145/409] Building C object CMakeFiles/mgba.dir/src/util/geometry.c.o
+[146/409] Building C object CMakeFiles/mgba.dir/src/util/image/export.c.o
+[147/409] Building C object CMakeFiles/mgba.dir/src/util/image/font.c.o
+[148/409] Building C object CMakeFiles/mgba.dir/src/util/interpolator.c.o
+[149/409] Building CXX object gbavirtualcart/CMakeFiles/gbavirtualcart.dir/src/gbavc.cpp.o
+[150/409] Building C object CMakeFiles/mgba.dir/src/util/patch.c.o
+[151/409] Building C object CMakeFiles/mgba.dir/src/util/image.c.o
+[152/409] Building C object CMakeFiles/mgba.dir/version.c.o
+[153/409] Building C object CMakeFiles/mgba.dir/src/util/patch-fast.c.o
+[154/409] Building C object CMakeFiles/mgba.dir/src/util/image/png-io.c.o
+[155/409] Building C object CMakeFiles/mgba.dir/src/util/patch-ips.c.o
+[156/409] Building C object CMakeFiles/mgba.dir/src/util/ring-fifo.c.o
+[157/409] Building C object CMakeFiles/mgba.dir/src/util/text-codec.c.o
+[158/409] Building C object CMakeFiles/mgba.dir/src/util/sfo.c.o
+[159/409] Building C object CMakeFiles/mgba.dir/src/util/patch-ups.c.o
+[160/409] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-mem.c.o
+[161/409] Building C object CMakeFiles/mgba.dir/src/third-party/inih/ini.c.o
+[162/409] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-fifo.c.o
+[163/409] Building C object CMakeFiles/mgba.dir/src/platform/posix/memory.c.o
+[164/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zBuf.c.o
+[165/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zAlloc.c.o
+[166/409] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-fd.c.o
+/home/tsila/gba/mgba/src/util/vfs/vfs-fd.c: In function ‘_vfdTruncate’:
+/home/tsila/gba/mgba/src/util/vfs/vfs-fd.c:234:9: warning: ignoring return value of ‘ftruncate’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  234 |         ftruncate(vfd->fd, size);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~
+[167/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zBuf2.c.o
+[168/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zCrc.c.o
+[169/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zCrcOpt.c.o
+[170/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/CpuArch.c.o
+[171/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Delta.c.o
+[172/409] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-dirent.c.o
+[173/409] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-zip.c.o
+[174/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zDec.c.o
+[175/409] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-lzma.c.o
+[176/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Bra.c.o
+[177/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Bra86.c.o
+[178/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/BraIA64.c.o
+[179/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Lzma2Dec.c.o
+[180/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Bcj2.c.o
+[181/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Ppmd7Dec.c.o
+[182/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zArcIn.c.o
+[183/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zFile.c.o
+[184/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zStream.c.o
+[185/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/LzmaDec.c.o
+[186/409] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Ppmd7.c.o
+[187/409] Building C object CMakeFiles/mgba.dir/src/gb/sio/lockstep.c.o
+[188/409] Building C object CMakeFiles/mgba.dir/src/gb/sio/printer.c.o
+[189/409] Building C object CMakeFiles/mgba.dir/src/feature/sqlite3/no-intro.c.o
+[190/409] Building C object CMakeFiles/mgba.dir/src/gba/sio/dolphin.c.o
+[191/409] Building C object CMakeFiles/mgba.dir/src/platform/opengl/gl.c.o
+[192/409] Building C object CMakeFiles/mgba.dir/src/gba/sio/lockstep.c.o
+[193/409] Building C object CMakeFiles/mgba.dir/src/platform/opengl/gles2.c.o
+[194/409] Building C object CMakeFiles/mgba.dir/src/debugger/access-logger.c.o
+[195/409] Building C object CMakeFiles/mgba.dir/src/debugger/symbols.c.o
+[196/409] Building C object CMakeFiles/mgba.dir/src/debugger/parser.c.o
+[197/409] Building C object CMakeFiles/mgba.dir/src/debugger/debugger.c.o
+[198/409] Building C object CMakeFiles/mgba.dir/src/debugger/stack-trace.c.o
+[199/409] Building C object CMakeFiles/mgba.dir/src/debugger/cli-debugger.c.o
+/home/tsila/gba/mgba/src/debugger/cli-debugger.c: In function ‘CLIDebuggerTabComplete’:
+/home/tsila/gba/mgba/src/debugger/cli-debugger.c:1338:83: warning: unused parameter ‘initial’ [-Wunused-parameter]
+ 1338 | bool CLIDebuggerTabComplete(struct CLIDebugger* debugger, const char* token, bool initial, size_t tokenLen) {
+      |                                                                                   ^
+[200/409] Building C object CMakeFiles/mgba.dir/src/debugger/cli-debugger-scripting.c.o
+[201/409] Building C object CMakeFiles/mgba.dir/src/sm83/debugger/cli-debugger.c.o
+[202/409] Building C object CMakeFiles/mgba.dir/src/sm83/debugger/debugger.c.o
+[203/409] Building C object CMakeFiles/mgba.dir/src/sm83/debugger/memory-debugger.c.o
+[204/409] Building C object CMakeFiles/mgba.dir/src/gb/debugger/debugger.c.o
+[205/409] Building C object CMakeFiles/mgba.dir/src/gb/debugger/cli.c.o
+[206/409] Building C object CMakeFiles/mgba.dir/src/debugger/gdb-stub.c.o
+[207/409] Building C object CMakeFiles/mgba.dir/src/gb/debugger/symbols.c.o
+[208/409] Building C object CMakeFiles/mgba.dir/src/arm/debugger/cli-debugger.c.o
+[209/409] Building C object CMakeFiles/mgba.dir/src/arm/debugger/memory-debugger.c.o
+[210/409] Building C object CMakeFiles/mgba.dir/src/arm/debugger/debugger.c.o
+[211/409] Building C object CMakeFiles/mgba.dir/src/script/canvas.c.o
+[212/409] Building C object CMakeFiles/mgba.dir/src/script/context.c.o
+[213/409] Building C object CMakeFiles/mgba.dir/src/script/console.c.o
+[214/409] Building C object CMakeFiles/mgba.dir/src/gba/debugger/cli.c.o
+[215/409] Building C object CMakeFiles/mgba.dir/src/script/input.c.o
+[216/409] Building C object CMakeFiles/mgba.dir/src/script/image.c.o
+[217/409] Building C object CMakeFiles/mgba.dir/src/script/socket.c.o
+[218/409] Building C object CMakeFiles/mgba.dir/src/script/stdlib.c.o
+[219/409] Building C object CMakeFiles/mgba.dir/src/gba/extra/battlechip.c.o
+[220/409] Building C object CMakeFiles/mgba.dir/src/script/storage.c.o
+[221/409] Building C object CMakeFiles/mgba.dir/src/script/types.c.o
+[222/409] Building C object CMakeFiles/mgba.dir/src/gba/extra/proxy.c.o
+[223/409] Building C object CMakeFiles/mgba.dir/src/feature/proxy-backend.c.o
+[224/409] Building C object CMakeFiles/mgba.dir/src/feature/video-backend.c.o
+[225/409] Building C object CMakeFiles/mgba.dir/src/feature/commandline.c.o
+[226/409] Building C object CMakeFiles/mgba.dir/src/gb/extra/proxy.c.o
+[227/409] Building C object CMakeFiles/mgba.dir/src/feature/updater.c.o
+[228/409] Building C object CMakeFiles/mgba.dir/src/feature/thread-proxy.c.o
+[229/409] Linking CXX static library gbavirtualcart/libgbavirtualcart.a
+[230/409] Building C object CMakeFiles/mgba.dir/src/feature/video-logger.c.o
+[231/409] Building CXX object discord-rpc/src/CMakeFiles/discord-rpc.dir/connection_unix.cpp.o
+[232/409] Building CXX object discord-rpc/src/CMakeFiles/discord-rpc.dir/discord_register_linux.cpp.o
+[233/409] Building C object CMakeFiles/mgba-mgba-autoqa.dir/src/platform/gbabr-autoqa.c.o
+[234/409] Building C object CMakeFiles/mgba-mgba-selftest.dir/src/platform/gbabr-selftest.c.o
+/home/tsila/gba/mgba/src/platform/gbabr-selftest.c: In function ‘_testInputMovie’:
+/home/tsila/gba/mgba/src/platform/gbabr-selftest.c:345:18: warning: ignoring return value of ‘fread’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  345 |         if (f) { fread(buf, 1, sizeof(buf) - 1, f); fclose(f); }
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[235/409] Building C object CMakeFiles/mgba.dir/src/core/scripting.c.o
+[236/409] Building CXX object discord-rpc/src/CMakeFiles/discord-rpc.dir/serialization.cpp.o
+[237/409] Linking CXX static library discord-rpc/src/libdiscord-rpc.a
+[238/409] Building C object sdl/CMakeFiles/mgba-sdl.dir/sdl-audio.c.o
+[239/409] Building C object sdl/CMakeFiles/mgba-sdl.dir/sdl-events.c.o
+[240/409] Building C object sdl/CMakeFiles/mgba-sdl.dir/gl-common.c.o
+[241/409] Building C object sdl/CMakeFiles/mgba-sdl.dir/main.c.o
+[242/409] Building C object sdl/CMakeFiles/mgba-sdl.dir/gl-sdl.c.o
+[243/409] Building C object sdl/CMakeFiles/mgba-sdl.dir/gles2-sdl.c.o
+[244/409] Building C object sdl/CMakeFiles/mgba-sdl.dir/sw-sdl2.c.o
+[245/409] Linking C executable updater-stub
+lto-wrapper: warning: using serial compilation of 2 LTRANS jobs
+lto-wrapper: note: see the ‘-flto’ option documentation for more information
+[246/409] Building C object CMakeFiles/mgba.dir/src/third-party/sqlite3/sqlite3.c.o
+[247/409] Linking CXX shared library libmgba.so.0.11.0
+lto-wrapper: warning: using serial compilation of 52 LTRANS jobs
+lto-wrapper: note: see the ‘-flto’ option documentation for more information
+/home/tsila/gba/mgba/src/gba/renderers/software-bg.c: In function ‘GBAVideoSoftwareRendererDrawBackgroundMode4’:
+/home/tsila/gba/mgba/src/gba/renderers/software-bg.c:154:65: warning: ‘localX’ may be used uninitialized [-Wmaybe-uninitialized]
+  154 |         if (mosaicWait && localX >= 0 && localY >= 0 && (localX >> 8) < GBA_VIDEO_HORIZONTAL_PIXELS && (localY >> 8) < GBA_VIDEO_VERTICAL_PIXELS) {
+      |                                                                 ^
+/home/tsila/gba/mgba/src/gba/renderers/software-bg.c:147:9: note: ‘localX’ was declared here
+  147 |         BACKGROUND_BITMAP_INIT;
+      |         ^
+/home/tsila/gba/mgba/src/gba/renderers/software-bg.c:154:112: warning: ‘localY’ may be used uninitialized [-Wmaybe-uninitialized]
+  154 |         if (mosaicWait && localX >= 0 && localY >= 0 && (localX >> 8) < GBA_VIDEO_HORIZONTAL_PIXELS && (localY >> 8) < GBA_VIDEO_VERTICAL_PIXELS) {
+      |                                                                                                                ^
+/home/tsila/gba/mgba/src/gba/renderers/software-bg.c:147:9: note: ‘localY’ was declared here
+  147 |         BACKGROUND_BITMAP_INIT;
+      |         ^
+[248/409] Creating library symlink libmgba.so.0.11 libmgba.so
+[249/409] Linking CXX executable mgba-mgba-autoqa
+FAILED: mgba-mgba-autoqa 
+: && /usr/bin/c++ -Wall -Wextra -Wno-missing-field-initializers -Woverloaded-virtual -Werror=reorder -pthread -O3 -DNDEBUG -flto  CMakeFiles/mgba-mgba-autoqa.dir/src/platform/gbabr-autoqa.c.o -o mgba-mgba-autoqa  -Wl,-rpath,/home/tsila/gba/mgba/build-mgba  libmgba.so.0.11.0  gbavirtualcart/libgbavirtualcart.a  /usr/lib/x86_64-linux-gnu/libGL.so  /usr/lib/x86_64-linux-gnu/libEGL.so  /usr/lib/x86_64-linux-gnu/libz.so  /usr/lib/x86_64-linux-gnu/libpng.so  -lminizip  /usr/lib/x86_64-linux-gnu/libepoxy.so  /usr/lib/x86_64-linux-gnu/libz.so  /usr/lib/x86_64-linux-gnu/libpng.so  -lminizip  /usr/lib/x86_64-linux-gnu/libepoxy.so  /usr/lib/x86_64-linux-gnu/libfreetype.so  /usr/lib/x86_64-linux-gnu/libjson-c.so.5.3.0  -lm && :
+/usr/bin/ld: /tmp/ccc8VhrY.ltrans0.ltrans.o: in function `main':
+<artificial>:(.text.startup+0xb43): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0xc28): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0xee1): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0xf09): undefined reference to `GBAGBABRFlush'
+/usr/bin/ld: <artificial>:(.text.startup+0x1008): undefined reference to `GBAGBABRCapacity'
+/usr/bin/ld: <artificial>:(.text.startup+0x1017): undefined reference to `GBAGBABRProfileName'
+/usr/bin/ld: <artificial>:(.text.startup+0x111e): undefined reference to `GBAGBABRProfileName'
+/usr/bin/ld: <artificial>:(.text.startup+0x11ba): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x12ba): undefined reference to `GBAGBABRColdReset'
+/usr/bin/ld: <artificial>:(.text.startup+0x13be): undefined reference to `GBAGBABRProfileName'
+/usr/bin/ld: <artificial>:(.text.startup+0x155b): undefined reference to `GBAGBABRNativeSaveAllowed'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadROM16'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadROM32'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRWriteROM16'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRDestroy'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRSaveExtraState'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRLoadExtraState'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRRecordKeys'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRResetVolatile'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRWriteSRAM8'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRTryActivate'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRNoteNativeSaveAccess'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadSRAM8'
+collect2: error: ld returned 1 exit status
+[250/409] Linking CXX executable mgba-mgba-selftest
+FAILED: mgba-mgba-selftest 
+: && /usr/bin/c++ -Wall -Wextra -Wno-missing-field-initializers -Woverloaded-virtual -Werror=reorder -pthread -O3 -DNDEBUG -flto  CMakeFiles/mgba-mgba-selftest.dir/src/platform/gbabr-selftest.c.o -o mgba-mgba-selftest  -Wl,-rpath,/home/tsila/gba/mgba/build-mgba  libmgba.so.0.11.0  gbavirtualcart/libgbavirtualcart.a  /usr/lib/x86_64-linux-gnu/libGL.so  /usr/lib/x86_64-linux-gnu/libEGL.so  /usr/lib/x86_64-linux-gnu/libz.so  /usr/lib/x86_64-linux-gnu/libpng.so  -lminizip  /usr/lib/x86_64-linux-gnu/libepoxy.so  /usr/lib/x86_64-linux-gnu/libz.so  /usr/lib/x86_64-linux-gnu/libpng.so  -lminizip  /usr/lib/x86_64-linux-gnu/libepoxy.so  /usr/lib/x86_64-linux-gnu/libfreetype.so  /usr/lib/x86_64-linux-gnu/libjson-c.so.5.3.0  -lm && :
+/usr/bin/ld: /tmp/cc7BU1XM.ltrans0.ltrans.o: in function `_testInputMovie':
+<artificial>:(.text+0x6ee): undefined reference to `GBAGBABRStartInputRecording'
+/usr/bin/ld: <artificial>:(.text+0x71c): undefined reference to `GBAGBABRInputRecordingActive'
+/usr/bin/ld: <artificial>:(.text+0x728): undefined reference to `GBAGBABRStopInputRecording'
+/usr/bin/ld: <artificial>:(.text+0x7c3): undefined reference to `GBAGBABRInputRecordingActive'
+/usr/bin/ld: /tmp/cc7BU1XM.ltrans0.ltrans.o: in function `main':
+<artificial>:(.text.startup+0x2b0): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x2e3): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x399): undefined reference to `GBAGBABRColdReset'
+/usr/bin/ld: <artificial>:(.text.startup+0x580): undefined reference to `GBAGBABRColdReset'
+/usr/bin/ld: <artificial>:(.text.startup+0x5cd): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x607): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x61f): undefined reference to `GBAGBABRColdReset'
+/usr/bin/ld: <artificial>:(.text.startup+0x638): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x68a): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x747): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x758): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x7a5): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x801): undefined reference to `GBAGBABRFRAM'
+/usr/bin/ld: <artificial>:(.text.startup+0x837): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x8e4): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x914): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x9b9): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x9e9): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0xa38): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xa68): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xb44): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xb55): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xba2): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0xbda): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xc0c): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0xc22): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xc63): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xc93): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xd17): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0xd4c): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: /tmp/cc7BU1XM.ltrans0.ltrans.o:<artificial>:(.text.startup+0xdea): more undefined references to `GBAGBABRPhysicalNOR' follow
+/usr/bin/ld: /tmp/cc7BU1XM.ltrans0.ltrans.o: in function `main':
+<artificial>:(.text.startup+0x10db): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x10f2): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x1122): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x1143): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x1158): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x1179): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x119a): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x11bb): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x11dc): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x11f1): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x1212): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x1227): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x128d): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x12be): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x12e6): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x1309): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x1323): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x133d): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: /tmp/cc7BU1XM.ltrans0.ltrans.o:<artificial>:(.text.startup+0x135e): more undefined references to `GBAGBABRPhysicalNOR' follow
+/usr/bin/ld: /tmp/cc7BU1XM.ltrans0.ltrans.o: in function `main':
+<artificial>:(.text.startup+0x13b9): undefined reference to `GBAGBABRGetEventStats'
+/usr/bin/ld: <artificial>:(.text.startup+0x13dd): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: <artificial>:(.text.startup+0x13fc): undefined reference to `GBAGBABRPhysicalNOR'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadROM16'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadROM32'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRWriteROM16'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRDestroy'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRSaveExtraState'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRLoadExtraState'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRRecordKeys'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRResetVolatile'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRWriteSRAM8'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRTryActivate'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRNoteNativeSaveAccess'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadSRAM8'
+collect2: error: ld returned 1 exit status
+[251/409] Linking CXX executable sdl/mgba
+FAILED: sdl/mgba 
+: && /usr/bin/c++ -Wall -Wextra -Wno-missing-field-initializers -Woverloaded-virtual -Werror=reorder -pthread -O3 -DNDEBUG -flto  sdl/CMakeFiles/mgba-sdl.dir/sdl-audio.c.o sdl/CMakeFiles/mgba-sdl.dir/sdl-events.c.o sdl/CMakeFiles/mgba-sdl.dir/gl-common.c.o sdl/CMakeFiles/mgba-sdl.dir/main.c.o sdl/CMakeFiles/mgba-sdl.dir/gl-sdl.c.o sdl/CMakeFiles/mgba-sdl.dir/gles2-sdl.c.o sdl/CMakeFiles/mgba-sdl.dir/sw-sdl2.c.o -o sdl/mgba  -Wl,-rpath,/home/tsila/gba/mgba/build-mgba:  libmgba.so.0.11.0  /usr/lib/x86_64-linux-gnu/libSDL2.so  /usr/lib/x86_64-linux-gnu/libSDL2main.a  /usr/lib/x86_64-linux-gnu/libSDL2.so  /usr/lib/x86_64-linux-gnu/libGL.so  /usr/lib/x86_64-linux-gnu/libEGL.so  /usr/lib/x86_64-linux-gnu/libepoxy.so  gbavirtualcart/libgbavirtualcart.a  /usr/lib/x86_64-linux-gnu/libz.so  /usr/lib/x86_64-linux-gnu/libpng.so  -lminizip  /usr/lib/x86_64-linux-gnu/libz.so  /usr/lib/x86_64-linux-gnu/libpng.so  -lminizip  /usr/lib/x86_64-linux-gnu/libfreetype.so  /usr/lib/x86_64-linux-gnu/libjson-c.so.5.3.0  -lm  /usr/lib/x86_64-linux-gnu/libSDL2main.a  /usr/lib/x86_64-linux-gnu/libEGL.so  /usr/lib/x86_64-linux-gnu/libepoxy.so && :
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRResetVolatile'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRDestroy'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRNoteNativeSaveAccess'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRWriteSRAM8'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRRecordKeys'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRLoadExtraState'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadROM16'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadROM32'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRSaveExtraState'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRTryActivate'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRWriteROM16'
+/usr/bin/ld: libmgba.so.0.11.0: undefined reference to `GBAGBABRReadSRAM8'
+collect2: error: ld returned 1 exit status
+[252/409] Automatic MOC for target mgba-qt
+AutoMoc: /home/tsila/gba/mgba/src/platform/qt/GIFView.h:0:1: note: No relevant classes found. No output generated.
+AutoMoc: /home/tsila/gba/mgba/src/platform/qt/VideoView.h:0:1: note: No relevant classes found. No output generated.
+ninja: build stopped: subcommand failed.

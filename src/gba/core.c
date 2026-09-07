@@ -12,6 +12,7 @@
 #include <mgba/internal/arm/isa-inlines.h>
 #include <mgba/internal/debugger/symbols.h>
 #include <mgba/internal/gba/cheats.h>
+#include <mgba/internal/gba/cart/gbabr.h>
 #include <mgba/internal/gba/gba.h>
 #include <mgba/internal/gba/io.h>
 #include <mgba/internal/gba/debugger/cli.h>
@@ -919,6 +920,13 @@ static bool _GBACoreLoadExtraState(struct mCore* core, const struct mStateExtdat
 			ok = false;
 		}
 	}
+	const char* keepCart = getenv("MGBA_GBAVC_KEEP_CART_ON_STATE_LOAD");
+	if (!keepCart || !*keepCart) keepCart = getenv("MGBA_GBABR_KEEP_CART_ON_STATE_LOAD");
+	bool skipGBABRCartState = keepCart && *keepCart && strcmp(keepCart, "0") && strcasecmp(keepCart, "false");
+	if (!skipGBABRCartState && gba->memory.unl.type == GBA_UNL_CART_GBABR &&
+	    mStateExtdataGet(extdata, EXTDATA_SUBSYSTEM_START + GBA_SUBSYSTEM_GBABR_CART, &item)) {
+		ok = GBAGBABRLoadExtraState(gba, gba->memory.unl.gbabr, &item) && ok;
+	}
 	return ok;
 }
 
@@ -962,24 +970,41 @@ static bool _GBACoreSaveExtraState(struct mCore* core, struct mStateExtdata* ext
 		size = 0;
 	}
 
+	if (gba->memory.unl.type == GBA_UNL_CART_GBABR) {
+		struct mStateExtdataItem item;
+		memset(&item, 0, sizeof(item));
+		if (GBAGBABRSaveExtraState(gba->memory.unl.gbabr, &item)) {
+			mStateExtdataPut(extdata, EXTDATA_SUBSYSTEM_START + GBA_SUBSYSTEM_GBABR_CART, &item);
+		}
+	}
+
 	return true;
 }
 
 static void _GBACoreSetKeys(struct mCore* core, uint32_t keys) {
 	struct GBA* gba = core->board;
 	gba->keysActive = keys;
+	if (gba->memory.unl.type == GBA_UNL_CART_GBABR && gba->memory.unl.gbabr) {
+		GBAGBABRRecordKeys(gba, gba->memory.unl.gbabr, gba->keysActive);
+	}
 	GBATestKeypadIRQ(gba);
 }
 
 static void _GBACoreAddKeys(struct mCore* core, uint32_t keys) {
 	struct GBA* gba = core->board;
 	gba->keysActive |= keys;
+	if (gba->memory.unl.type == GBA_UNL_CART_GBABR && gba->memory.unl.gbabr) {
+		GBAGBABRRecordKeys(gba, gba->memory.unl.gbabr, gba->keysActive);
+	}
 	GBATestKeypadIRQ(gba);
 }
 
 static void _GBACoreClearKeys(struct mCore* core, uint32_t keys) {
 	struct GBA* gba = core->board;
 	gba->keysActive &= ~keys;
+	if (gba->memory.unl.type == GBA_UNL_CART_GBABR && gba->memory.unl.gbabr) {
+		GBAGBABRRecordKeys(gba, gba->memory.unl.gbabr, gba->keysActive);
+	}
 	GBATestKeypadIRQ(gba);
 }
 

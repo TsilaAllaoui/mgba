@@ -10,6 +10,7 @@
 #include <mgba/internal/defines.h>
 #include <mgba/internal/gba/gba.h>
 #include <mgba/internal/gba/dma.h>
+#include <mgba/internal/gba/cart/gbabr.h>
 #include <mgba/internal/gba/io.h>
 #include <mgba/internal/gba/serialize.h>
 #include "gba/hle-bios.h"
@@ -424,7 +425,9 @@ static void GBASetActiveRegion(struct ARMCore* cpu, uint32_t address) {
 
 #define LOAD_CART \
 	wait += waitstatesRegion[address >> BASE_OFFSET]; \
-	if ((address & (GBA_SIZE_ROM0 - 4)) < memory->romSize) { \
+	if (GBAUnlCartReadROM32(gba, address & (GBA_SIZE_ROM0 - 1), &value)) { \
+		/* GBABR status/ID/CFI mode */ \
+	} else if ((address & (GBA_SIZE_ROM0 - 4)) < memory->romSize) { \
 		LOAD_32(value, address & (GBA_SIZE_ROM0 - 4), memory->rom); \
 	} else if (memory->unl.type == GBA_UNL_CART_VFAME) { \
 		value = GBAVFameGetPatternValue(address, 32); \
@@ -537,6 +540,7 @@ uint32_t GBALoad16(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 	struct GBAMemory* memory = &gba->memory;
 	uint32_t value = 0;
 	int wait = 0;
+	uint16_t gbabrValue16 = 0;
 
 	switch (address >> BASE_OFFSET) {
 	case GBA_REGION_BIOS:
@@ -589,7 +593,9 @@ uint32_t GBALoad16(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 	case GBA_REGION_ROM1_EX:
 	case GBA_REGION_ROM2:
 		wait = memory->waitstatesNonseq16[address >> BASE_OFFSET];
-		if ((address & (GBA_SIZE_ROM0 - 2)) < memory->romSize) {
+		if (GBAUnlCartReadROM16(gba, address & (GBA_SIZE_ROM0 - 1), &gbabrValue16)) {
+			value = gbabrValue16;
+		} else if ((address & (GBA_SIZE_ROM0 - 2)) < memory->romSize) {
 			LOAD_16(value, address & (GBA_SIZE_ROM0 - 2), memory->rom);
 		} else if (memory->unl.type == GBA_UNL_CART_VFAME) {
 			value = GBAVFameGetPatternValue(address, 16);
@@ -610,7 +616,9 @@ uint32_t GBALoad16(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 		break;
 	case GBA_REGION_ROM2_EX:
 		wait = memory->waitstatesNonseq16[address >> BASE_OFFSET];
-		if (memory->savedata.type == GBA_SAVEDATA_EEPROM || memory->savedata.type == GBA_SAVEDATA_EEPROM512) {
+		if (GBAUnlCartReadROM16(gba, address & (GBA_SIZE_ROM0 - 1), &gbabrValue16)) {
+			value = gbabrValue16;
+		} else if (memory->savedata.type == GBA_SAVEDATA_EEPROM || memory->savedata.type == GBA_SAVEDATA_EEPROM512) {
 			value = GBASavedataReadEEPROM(&memory->savedata);
 		} else if ((address & 0x0DFC0000) >= 0x0DF80000 && memory->hw.devices & HW_EREADER) {
 			value = GBACartEReaderRead(&memory->ereader, address);
@@ -652,6 +660,7 @@ uint32_t GBALoad8(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 	struct GBAMemory* memory = &gba->memory;
 	uint32_t value = 0;
 	int wait = 0;
+	uint8_t gbabrSramValue = 0;
 
 	switch (address >> BASE_OFFSET) {
 	case GBA_REGION_BIOS:
@@ -717,6 +726,10 @@ uint32_t GBALoad8(struct ARMCore* cpu, uint32_t address, int* cycleCounter) {
 	case GBA_REGION_SRAM:
 	case GBA_REGION_SRAM_MIRROR:
 		wait = memory->waitstatesNonseq16[address >> BASE_OFFSET];
+		if (GBAUnlCartReadSRAM(gba, address & 0xFFFF, &gbabrSramValue)) {
+			value = gbabrSramValue;
+			break;
+		}
 		if (memory->savedata.type == GBA_SAVEDATA_AUTODETECT) {
 			mLOG(GBA_MEM, INFO, "Detected SRAM savegame");
 			GBASavedataInitSRAM(&memory->savedata);
@@ -984,6 +997,10 @@ void GBAStore16(struct ARMCore* cpu, uint32_t address, int16_t value, int* cycle
 		mLOG(GBA_MEM, GAME_ERROR, "Bad cartridge Store16: 0x%08X", address);
 		break;
 	case GBA_REGION_ROM2_EX:
+		if (memory->unl.type == GBA_UNL_CART_GBABR) {
+			GBAGBABRNoteNativeSaveAccess(gba, memory->unl.gbabr, address, (uint16_t) value, true);
+			break;
+		}
 		if ((address & 0x0DFC0000) >= 0x0DF80000 && memory->hw.devices & HW_EREADER) {
 			GBACartEReaderWrite(&memory->ereader, address, value);
 			break;

@@ -5,6 +5,7 @@ set(SOURCE_FILES
 	bios.c
 	cart/ereader.c
 	cart/gpio.c
+	cart/gbabr.c
 	cart/matrix.c
 	cart/unlicensed.c
 	cart/vfame.c

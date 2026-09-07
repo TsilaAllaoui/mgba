@@ -141,6 +141,14 @@ public:
 	void addFrameAction(std::function<void ()> callback);
 	uint64_t frameCounter() const { return m_frameCounter; }
 
+#ifdef M_CORE_GBA
+	QString virtualCartStatus();
+	bool virtualCartColdReset();
+	bool virtualCartStartMovie(const QString& path);
+	void virtualCartStopMovie();
+	bool virtualCartMovieActive();
+#endif
+
 public slots:
 	void start();
 	void stop();
@@ -262,6 +270,11 @@ private:
 	QString m_path;
 	QString m_baseDirectory;
 	QString m_savePath;
+#ifdef M_CORE_GBA
+	QString m_virtualCartScratchText;
+	QString m_gbavcScratchPath;
+	bool m_virtualCartScratchBool = false;
+#endif
 
 	bool m_patched = false;
 	bool m_preload = true;

@@ -22,6 +22,8 @@
 #include <mgba/feature/video-logger.h>
 #ifdef M_CORE_GBA
 #include <mgba/internal/gba/gba.h>
+#include <mgba/internal/gba/cart/gbabr.h>
+#include <mgba/internal/gba/cart/unlicensed.h>
 #include <mgba/internal/gba/renderers/cache-set.h>
 #include <mgba/internal/gba/sharkport.h>
 #endif
@@ -501,6 +503,90 @@ void CoreController::stop() {
 	setPaused(false);
 	mCoreThreadEnd(&m_threadContext);
 }
+
+#ifdef M_CORE_GBA
+QString CoreController::virtualCartStatus() {
+	m_virtualCartScratchText = CoreController::tr("mGBA virtual cartridge is not active for the current game.");
+	mCoreThreadRunFunction(&m_threadContext, [](mCoreThread* context) {
+		CoreController* controller = static_cast<CoreController*>(context->userData);
+		if (!context->core || context->core->platform(context->core) != mPLATFORM_GBA) return;
+		GBA* gba = static_cast<GBA*>(context->core->board);
+		if (!gba || gba->memory.unl.type != GBA_UNL_CART_GBABR || !gba->memory.unl.gbabr) return;
+		GBAGBABRCart* cart = gba->memory.unl.gbabr;
+		const GBAGBABREventStats* st = GBAGBABRGetEventStats(cart);
+		controller->m_virtualCartScratchText = CoreController::tr(
+			"Profile: %1\nCapacity: %2 MiB\n\n"
+			"NOR programs: %3\nNOR erases: %4\nFRAM writes: %5\nMapper changes: %6\n"
+			"Illegal NOR writes: %7\nInvalid NOR sequences: %8\nNative save accesses: %9\nCold resets: %10\n\n"
+			"Last event frame: %11\nLast PC: 0x%12\nLast CPU address: 0x%13\nLast physical address: 0x%14\n\n"
+			"Input recording: %15")
+			.arg(QString::fromUtf8(GBAGBABRProfileName(cart)))
+			.arg(static_cast<qulonglong>(GBAGBABRCapacity(cart) / (1024 * 1024)))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_NOR_PROGRAM] : 0))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_NOR_ERASE] : 0))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_FRAM_WRITE] : 0))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_MAPPER_CHANGE] : 0))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_ILLEGAL_NOR_WRITE] : 0))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_INVALID_NOR_SEQUENCE] : 0))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_NATIVE_SAVE_ACCESS] : 0))
+			.arg(static_cast<qulonglong>(st ? st->counts[GBA_GBABR_EVENT_COLD_RESET] : 0))
+			.arg(st ? st->lastFrame : 0)
+			.arg(st ? st->lastPc : 0, 8, 16, QLatin1Char('0'))
+			.arg(st ? st->lastCpuAddress : 0, 8, 16, QLatin1Char('0'))
+			.arg(st ? st->lastPhysicalAddress : 0, 8, 16, QLatin1Char('0'))
+			.arg(GBAGBABRInputRecordingActive(cart) ? CoreController::tr("ACTIVE") : CoreController::tr("stopped"));
+	});
+	return m_virtualCartScratchText;
+}
+
+bool CoreController::virtualCartColdReset() {
+	m_virtualCartScratchBool = false;
+	mCoreThreadRunFunction(&m_threadContext, [](mCoreThread* context) {
+		CoreController* controller = static_cast<CoreController*>(context->userData);
+		if (!context->core || context->core->platform(context->core) != mPLATFORM_GBA) return;
+		GBA* gba = static_cast<GBA*>(context->core->board);
+		if (!gba || gba->memory.unl.type != GBA_UNL_CART_GBABR || !gba->memory.unl.gbabr) return;
+		controller->m_virtualCartScratchBool = GBAGBABRColdReset(gba, gba->memory.unl.gbabr);
+		if (controller->m_virtualCartScratchBool) context->core->reset(context->core);
+	});
+	return m_virtualCartScratchBool;
+}
+
+bool CoreController::virtualCartStartMovie(const QString& path) {
+	m_gbavcScratchPath = path;
+	m_virtualCartScratchBool = false;
+	mCoreThreadRunFunction(&m_threadContext, [](mCoreThread* context) {
+		CoreController* controller = static_cast<CoreController*>(context->userData);
+		if (!context->core || context->core->platform(context->core) != mPLATFORM_GBA) return;
+		GBA* gba = static_cast<GBA*>(context->core->board);
+		if (!gba || gba->memory.unl.type != GBA_UNL_CART_GBABR || !gba->memory.unl.gbabr) return;
+		QByteArray utf8 = controller->m_gbavcScratchPath.toUtf8();
+		controller->m_virtualCartScratchBool = GBAGBABRStartInputRecording(gba, gba->memory.unl.gbabr, utf8.constData());
+	});
+	return m_virtualCartScratchBool;
+}
+
+void CoreController::virtualCartStopMovie() {
+	mCoreThreadRunFunction(&m_threadContext, [](mCoreThread* context) {
+		if (!context->core || context->core->platform(context->core) != mPLATFORM_GBA) return;
+		GBA* gba = static_cast<GBA*>(context->core->board);
+		if (gba && gba->memory.unl.type == GBA_UNL_CART_GBABR && gba->memory.unl.gbabr) {
+			GBAGBABRStopInputRecording(gba->memory.unl.gbabr);
+		}
+	});
+}
+
+bool CoreController::virtualCartMovieActive() {
+	m_virtualCartScratchBool = false;
+	mCoreThreadRunFunction(&m_threadContext, [](mCoreThread* context) {
+		CoreController* controller = static_cast<CoreController*>(context->userData);
+		if (!context->core || context->core->platform(context->core) != mPLATFORM_GBA) return;
+		GBA* gba = static_cast<GBA*>(context->core->board);
+		controller->m_virtualCartScratchBool = gba && gba->memory.unl.type == GBA_UNL_CART_GBABR && gba->memory.unl.gbabr && GBAGBABRInputRecordingActive(gba->memory.unl.gbabr);
+	});
+	return m_virtualCartScratchBool;
+}
+#endif
 
 void CoreController::reset() {
 	m_crashSeen = false;

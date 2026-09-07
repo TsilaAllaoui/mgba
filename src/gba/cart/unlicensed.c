@@ -4,6 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 #include <mgba/internal/gba/cart/unlicensed.h>
+#include <mgba/internal/gba/cart/gbabr.h>
 
 #include <mgba/internal/arm/macros.h>
 #include <mgba/internal/gba/gba.h>
@@ -36,6 +37,13 @@ void GBAUnlCartDetect(struct GBA* gba) {
 		return;
 	}
 
+	struct GBAGBABRCart* gbabr = NULL;
+	if (GBAGBABRTryActivate(gba, &gbabr)) {
+		gba->memory.unl.type = GBA_UNL_CART_GBABR;
+		gba->memory.unl.gbabr = gbabr;
+		return;
+	}
+
 	struct GBACartridge* cart = (struct GBACartridge*) gba->memory.rom;
 	if (GBAVFameDetect(&gba->memory.unl.vfame, gba->memory.rom, gba->memory.romSize, gba->romCrc32)) {
 		gba->memory.unl.type = GBA_UNL_CART_VFAME;
@@ -65,6 +73,10 @@ void GBAUnlCartDetect(struct GBA* gba) {
 }
 
 void GBAUnlCartReset(struct GBA* gba) {
+	if (gba->memory.unl.type == GBA_UNL_CART_GBABR) {
+		GBAGBABRResetVolatile(gba, gba->memory.unl.gbabr, false);
+		return;
+	}
 	if (gba->memory.unl.type == GBA_UNL_CART_MULTICART) {
 		gba->memory.unl.multi.bank = 0;
 		gba->memory.unl.multi.offset = 0;
@@ -76,6 +88,12 @@ void GBAUnlCartReset(struct GBA* gba) {
 }
 
 void GBAUnlCartUnload(struct GBA* gba) {
+	if (gba->memory.unl.type == GBA_UNL_CART_GBABR) {
+		GBAGBABRDestroy(gba, gba->memory.unl.gbabr);
+		gba->memory.unl.gbabr = NULL;
+		gba->memory.unl.type = GBA_UNL_CART_NONE;
+		return;
+	}
 	if (gba->memory.unl.type == GBA_UNL_CART_MULTICART && gba->romVf) {
 		gba->romVf->unmap(gba->romVf, gba->memory.unl.multi.rom, gba->memory.unl.multi.size);
 		gba->memory.unl.multi.rom = NULL;
@@ -89,6 +107,9 @@ void GBAUnlCartWriteSRAM(struct GBA* gba, uint32_t address, uint8_t value) {
 	switch (unl->type) {
 	case GBA_UNL_CART_VFAME:
 		GBAVFameSramWrite(&unl->vfame, address, value, gba->memory.savedata.data);
+		return;
+	case GBA_UNL_CART_GBABR:
+		GBAGBABRWriteSRAM8(gba, unl->gbabr, address, value);
 		return;
 	case GBA_UNL_CART_MULTICART:
 		mLOG(GBA_MEM, DEBUG, "Multicart writing SRAM %06X:%02X", address, value);
@@ -149,7 +170,24 @@ void GBAUnlCartWriteROM(struct GBA* gba, uint32_t address, uint16_t value) {
 	case GBA_UNL_CART_MULTICART:
 		mLOG(GBA_MEM, STUB, "Unimplemented writing to ROM %07X:%04X", address, value);
 		break;
+	case GBA_UNL_CART_GBABR:
+		GBAGBABRWriteROM16(gba, unl->gbabr, address, value);
+		break;
 	}
+}
+
+bool GBAUnlCartReadROM16(struct GBA* gba, uint32_t address, uint16_t* value) {
+	return gba->memory.unl.type == GBA_UNL_CART_GBABR && GBAGBABRReadROM16(gba, gba->memory.unl.gbabr, address, value);
+}
+
+bool GBAUnlCartReadROM32(struct GBA* gba, uint32_t address, uint32_t* value) {
+	return gba->memory.unl.type == GBA_UNL_CART_GBABR && GBAGBABRReadROM32(gba, gba->memory.unl.gbabr, address, value);
+}
+
+bool GBAUnlCartReadSRAM(struct GBA* gba, uint32_t address, uint8_t* value) {
+	if (gba->memory.unl.type != GBA_UNL_CART_GBABR) return false;
+	*value = GBAGBABRReadSRAM8(gba, gba->memory.unl.gbabr, address);
+	return true;
 }
 
 static void _multicartSettle(struct mTiming* timing, void* context, uint32_t cyclesLate) {
@@ -183,6 +221,9 @@ void GBAUnlCartSerialize(const struct GBA* gba, struct GBASerializedState* state
 		STORE_16(unl->vfame.romMode, 0, &state->vfame.romMode);
 		memcpy(state->vfame.writeSequence, unl->vfame.writeSequence, sizeof(state->vfame.writeSequence));
 		state->vfame.acceptingModeChange = unl->vfame.acceptingModeChange;
+		break;
+	case GBA_UNL_CART_GBABR:
+		flags = GBASerializedUnlCartFlagsSetType(flags, GBA_UNL_CART_GBABR);
 		break;
 	case GBA_UNL_CART_MULTICART:
 		flags = GBASerializedUnlCartFlagsSetType(0, GBA_UNL_CART_MULTICART);
@@ -228,6 +269,9 @@ void GBAUnlCartDeserialize(struct GBA* gba, const struct GBASerializedState* sta
 		LOAD_16(unl->vfame.romMode, 0, &state->vfame.romMode);
 		memcpy(unl->vfame.writeSequence, state->vfame.writeSequence, sizeof(state->vfame.writeSequence));
 		unl->vfame.acceptingModeChange = state->vfame.acceptingModeChange;
+		return;
+	case GBA_UNL_CART_GBABR:
+		/* Mutable GBABR cartridge state lives in extdata. */
 		return;
 	case GBA_UNL_CART_MULTICART:
 		unl->multi.bank = state->multicart.bank;

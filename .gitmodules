@@ -1,0 +1,4 @@
+[submodule "externals/GBAVirtualCart"]
+	path = externals/GBAVirtualCart
+	url = https://github.com/TsilaAllaoui/GBAVirtualCart.git
+	branch = master

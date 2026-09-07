@@ -35,6 +35,7 @@ void GBASerialize(struct GBA* gba, struct GBASerializedState* state) {
 		switch (gba->memory.unl.type) {
 		case GBA_UNL_CART_NONE:
 		case GBA_UNL_CART_VFAME:
+		case GBA_UNL_CART_GBABR:
 			state->id = ((struct GBACartridge*) gba->memory.rom)->id;
 			memcpy(state->title, ((struct GBACartridge*) gba->memory.rom)->title, sizeof(state->title));
 			break;
@@ -121,6 +122,7 @@ bool GBADeserialize(struct GBA* gba, const struct GBASerializedState* state) {
 		switch (gba->memory.unl.type) {
 		case GBA_UNL_CART_NONE:
 		case GBA_UNL_CART_VFAME:
+		case GBA_UNL_CART_GBABR:
 		default:
 			cart = (struct GBACartridge*) gba->memory.rom;
 			break;

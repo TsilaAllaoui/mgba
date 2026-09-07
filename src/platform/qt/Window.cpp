@@ -6,6 +6,11 @@
 #include "Window.h"
 
 #include <QKeyEvent>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QUrl>
 #include <QKeySequence>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -265,22 +270,21 @@ void Window::resizeFrame(const QSize& size) {
 	QSize newSize(size);
 	if (!m_config->getOption("lockFrameSize").toInt()) {
 		m_savedSize = size;
-		if (windowHandle()) {
-			QRect geom = windowHandle()->screen()->availableGeometry();
-			if (newSize.width() > geom.width()) {
-				newSize.setWidth(geom.width());
-			}
-			if (newSize.height() > geom.height()) {
-				newSize.setHeight(geom.height());
-			}
+	}
+	if (windowHandle()) {
+		QRect geom = windowHandle()->screen()->availableGeometry();
+		if (newSize.width() > geom.width()) {
+			newSize.setWidth(geom.width());
 		}
-		newSize += this->size();
-		newSize -= centralWidget()->size();
-		if (!isFullScreen()) {
-			resize(newSize);
+		if (newSize.height() > geom.height()) {
+			newSize.setHeight(geom.height());
 		}
 	}
-	recalculateFrameSize(size);
+	newSize += this->size();
+	newSize -= centralWidget()->size();
+	if (!isFullScreen()) {
+		resize(newSize);
+	}
 }
 
 void Window::updateMultiplayerStatus(bool canOpenAnother) {
@@ -702,36 +706,28 @@ void Window::keyReleaseEvent(QKeyEvent* event) {
 	event->accept();
 }
 
-void Window::recalculateFrameSize(const QSize& size) {
-	int factor = -1;
-	QSize baseSize(GBA_VIDEO_HORIZONTAL_PIXELS, GBA_VIDEO_VERTICAL_PIXELS);
-	if (m_display) {
-		baseSize = m_display->contentSize();
-	} else if (m_controller) {
-		baseSize = m_controller->screenDimensions();
-	}
-	if (!baseSize.isEmpty() && size.width() % baseSize.width() == 0 && size.height() % baseSize.height() == 0 && size.width() / baseSize.width() == size.height() / baseSize.height()) {
-		factor = size.width() / baseSize.width();
-	}
-
-	m_savedScale = factor;
-	for (QMap<int, std::shared_ptr<Action>>::iterator iter = m_frameSizes.begin(); iter != m_frameSizes.end(); ++iter) {
-		std::shared_ptr<Action> frameSize = iter.value();
-		frameSize->setActive(iter.key() == factor);
-	}
-}
-
 void Window::resizeEvent(QResizeEvent*) {
-	m_config->setOption("fullscreen", isFullScreen());
-	if (m_config->getOption("lockFrameSize").toInt()) {
-		return;
-	}
 	QSize newSize = centralWidget()->size();
 	if (!isFullScreen()) {
 		m_config->setOption("height", newSize.height());
 		m_config->setOption("width", newSize.width());
 	}
-	recalculateFrameSize(newSize);
+
+	int factor = 0;
+	QSize size(GBA_VIDEO_HORIZONTAL_PIXELS, GBA_VIDEO_VERTICAL_PIXELS);
+	if (m_controller) {
+		size = m_controller->screenDimensions();
+	}
+	if (newSize.width() % size.width() == 0 && newSize.height() % size.height() == 0 &&
+	    newSize.width() / size.width() == newSize.height() / size.height()) {
+		factor = newSize.width() / size.width();
+	}
+	m_savedScale = factor;
+	for (QMap<int, std::shared_ptr<Action>>::iterator iter = m_frameSizes.begin(); iter != m_frameSizes.end(); ++iter) {
+		iter.value()->setActive(iter.key() == factor);
+	}
+
+	m_config->setOption("fullscreen", isFullScreen());
 }
 
 void Window::showEvent(QShowEvent* event) {
@@ -1613,16 +1609,17 @@ void Window::setupMenu(QMenuBar* menubar) {
 				size = minimumSize;
 			}
 			size *= i;
+			m_savedScale = i;
 			m_config->setOption("scaleMultiplier", i); // TODO: Port to other
+			m_savedSize = size;
 			resizeFrame(size);
 			if (lockFrameSize) {
-				m_display->setMaximumScale(i);
+				m_display->setMaximumSize(size);
 			}
 			setSize->setActive(true);
 		}, "frame");
 		setSize->setExclusive(true);
 		if (m_savedScale == i) {
-			QSignalBlocker blocker(setSize.get());
 			setSize->setActive(true);
 		}
 		m_frameSizes[i] = setSize;
@@ -1641,14 +1638,9 @@ void Window::setupMenu(QMenuBar* menubar) {
 	lockFrameSize->connect([this](const QVariant& value) {
 		if (m_display) {
 			if (value.toBool()) {
-				if (m_savedScale > 0) {
-					m_display->setMaximumScale(m_savedScale);
-				} else {
-					m_display->setMaximumSize(m_display->size());
-				}
+				m_display->setMaximumSize(m_display->size());
 			} else {
 				m_display->setMaximumSize({});
-				resizeEvent(nullptr);
 			}
 		}
 	}, this);
@@ -1761,6 +1753,86 @@ void Window::setupMenu(QMenuBar* menubar) {
 		showMenu(!hidden);
 	}, "av", QKeySequence("Ctrl+M"));
 #endif
+
+	// mGBA workflow helpers. These are intentionally top-level so a
+	// one-time gameplay checkpoint/movie can be captured without manually
+	// managing emulator state files.
+	m_actions.addMenu(tr("Virtual Cart"), "gbavirtualcart");
+	m_actions.addAction(tr("Virtual cartridge status..."), "virtualCartStatus", [this]() {
+		if (!m_controller) {
+			QMessageBox::information(this, tr("mGBA"), tr("No game is running."));
+			return;
+		}
+#ifdef M_CORE_GBA
+		QMessageBox::information(this, tr("mGBA — Virtual Cart"), m_controller->virtualCartStatus());
+#else
+		QMessageBox::information(this, tr("mGBA"), tr("This build does not include the GBA core."));
+#endif
+	}, "gbavirtualcart");
+
+	m_actions.addAction(tr("Capture checkpoint + start recording..."), "virtualCartRecord", [this]() {
+		if (!m_controller) {
+			QMessageBox::warning(this, tr("mGBA"), tr("Load a scanned/patched GBA ROM first."));
+			return;
+		}
+#ifdef M_CORE_GBA
+		QString dirPath = qEnvironmentVariable("MGBA_GBAVC_RECORD_DIR");
+		if (dirPath.isEmpty()) {
+			dirPath = QFileDialog::getExistingDirectory(this, tr("Choose mGBA recording folder"));
+		}
+		if (dirPath.isEmpty()) return;
+		QDir dir(dirPath);
+		if (!dir.exists() && !QDir().mkpath(dirPath)) {
+			QMessageBox::critical(this, tr("mGBA"), tr("Could not create recording folder:\n%1").arg(dirPath));
+			return;
+		}
+		const QString phase = qEnvironmentVariable("MGBA_GBAVC_RECORD_PHASE", QStringLiteral("save")).toLower();
+		const QString stateName = phase == QStringLiteral("load") ? QStringLiteral("pre-load.ss") : QStringLiteral("pre-save.ss");
+		const QString movieName = phase == QStringLiteral("load") ? QStringLiteral("load.movie") : QStringLiteral("save.movie");
+		const QString statePath = dir.filePath(stateName);
+		const QString moviePath = dir.filePath(movieName);
+		m_controller->saveState(statePath);
+		if (!QFileInfo::exists(statePath)) {
+			QMessageBox::critical(this, tr("mGBA"), tr("Could not create checkpoint:\n%1").arg(statePath));
+			return;
+		}
+		if (!m_controller->virtualCartStartMovie(moviePath)) {
+			QMessageBox::critical(this, tr("mGBA"), tr("Could not start input recording. Make sure this ROM was launched with a mGBA virtual-cart manifest."));
+			return;
+		}
+		QMessageBox::information(this, tr("mGBA — Recording"),
+			tr("Checkpoint captured.\n\nNow perform exactly ONE in-game %1 operation. When the game confirms it, choose:\n\nVirtual Cart → Finish recording\n\nCheckpoint:\n%2\n\nMovie:\n%3")
+			.arg(phase == QStringLiteral("load") ? tr("Load") : tr("Save"), statePath, moviePath));
+#endif
+	}, "gbavirtualcart");
+
+	m_actions.addAction(tr("Finish recording"), "virtualCartStopRecording", [this]() {
+		if (!m_controller) return;
+#ifdef M_CORE_GBA
+		const bool wasActive = m_controller->virtualCartMovieActive();
+		m_controller->virtualCartStopMovie();
+		QMessageBox::information(this, tr("mGBA"), wasActive ? tr("Recording finished. You can now close mGBA; the mGBA recorder script will register the checkpoint/movie automatically.") : tr("No mGBA input recording was active."));
+#endif
+	}, "gbavirtualcart");
+
+	m_actions.addSeparator("gbavirtualcart");
+	m_actions.addAction(tr("Cold power cycle (preserve virtual NOR/FRAM)"), "virtualCartColdReset", [this]() {
+		if (!m_controller) return;
+#ifdef M_CORE_GBA
+		if (!m_controller->virtualCartColdReset()) {
+			QMessageBox::warning(this, tr("mGBA"), tr("No active mGBA virtual cartridge, or persistence flush failed."));
+		}
+#endif
+	}, "gbavirtualcart");
+
+	m_actions.addAction(tr("Open recording/test folder"), "virtualCartOpenFolder", [this]() {
+		QString dirPath = qEnvironmentVariable("MGBA_GBAVC_RECORD_DIR");
+		if (dirPath.isEmpty()) dirPath = qEnvironmentVariable("MGBA_GBAVC_LIBRARY");
+		if (dirPath.isEmpty()) {
+			dirPath = QFileDialog::getExistingDirectory(this, tr("Choose mGBA folder"));
+		}
+		if (!dirPath.isEmpty()) QDesktopServices::openUrl(QUrl::fromLocalFile(dirPath));
+	}, "gbavirtualcart");
 
 	m_actions.addMenu(tr("&Tools"), "tools");
 	m_actions.addAction(tr("View &logs..."), "viewLogs", static_cast<QWidget*>(m_logView), &QWidget::show, "tools");
@@ -2362,9 +2434,9 @@ void Window::attachDisplay() {
 	m_display->attach(m_controller);
 	connect(m_display.get(), &QGBA::Display::drawingStarted, this, &Window::changeRenderer);
 	if (m_config->getOption("lockFrameSize").toInt()) {
-		m_display->setMaximumScale(m_savedScale);
-	} else {
 		m_display->setMaximumSize(m_savedSize);
+	} else {
+		m_display->setMaximumSize({});
 	}
 	m_display->startDrawing(m_controller);
 
